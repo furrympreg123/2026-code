@@ -57,7 +57,7 @@ public class noughtsCrosses
     }
     
     public void player2Turn() {
-        System.out.println("It is player 2s turn! (noughts)");
+        System.out.println("It is player 2s turn! (crosses)");
         System.out.println("Enter first coordinate");
         xcoord1 = kb.nextInt();
         System.out.println("Enter second coordinate");

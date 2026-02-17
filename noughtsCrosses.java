@@ -3,7 +3,7 @@
  * This is the game noughts and crosses!
  *
  * @author Kanya Farley
- * @version 16/2/2026
+ * @version 17/2/2026
  */
 import java.util.Scanner;
 import java.util.Arrays;
@@ -18,14 +18,15 @@ public class noughtsCrosses
     int oCol;
     int xRow;
     int xCol;
-    char p1 = 'O';
+    char p1 = '◯';
     char p2 = 'X';
-    boolean winner = false;
+    File save = new File("last_save.txt");
     /**
      * Constructor for objects of class noughtsCrosses
      */
     public noughtsCrosses()
     {
+        loadGame();
         for (int i = 0; i < board.length; i++) { // initializes grid
             for (int j = 0; j < board[0].length; j++) {
                 board[i][j]= ' ';
@@ -35,10 +36,16 @@ public class noughtsCrosses
         System.out.println(Arrays.toString(board));
         System.out.println(board);
         while (true) {
-            player1Turn();
-            player1Print();
-            player2Turn();
-            player2Print();
+            if (player1wins() == false && player2wins() == false) {
+                player1Turn();
+                player1Print();
+            }
+            player1wins();
+            player2wins();
+            if (player1wins() == false && player2wins() == false) {
+                player2Turn();
+                player2Print();
+            }
             player1wins();
             player2wins();
             saveGame();
@@ -93,7 +100,7 @@ public class noughtsCrosses
             board[oRow][oCol] = p1;
         } else if (board[oRow][oCol] != ' ') {
             System.out.println("This spot on the grid is already taken! Try again.");
-            player2Turn();
+            player1Turn();
         }
         printBoard();
     }
@@ -137,15 +144,24 @@ public class noughtsCrosses
             // Checks rows and columns
             if ((board[i][0] == p1 && board[i][1] == p1 && board[i][2] == p1) ||
                 (board[0][i] == p1 && board[1][i] == p1 && board[2][i] == p1)) {
+                System.out.println("Player 1 has won!");
+                
                 return true;
+            } else {
+                System.out.println("Player 1 hasn't won");
+                return false;
             }
         }
         // Check diagonals
         if ((board[0][0] == p1 && board[1][1] == p1 && board[2][2] == p1) ||
         (board[0][2] == p1 && board[1][1] == p1 && board[2][0] == p1)) {
+            System.out.println("Player 1 has won!");
+            
             return true;
+        } else {
+            System.out.println("Player 1 hasn't won");
+            return false;
         }
-        return false;
     }
     
     public boolean player2wins() {
@@ -153,15 +169,24 @@ public class noughtsCrosses
             // Checks rows and columns
             if ((board[i][0] == p2 && board[i][1] == p2 && board[i][2] == p2) ||
                 (board[0][i] == p2 && board[1][i] == p2 && board[2][i] == p2)) {
+                System.out.println("Player 2 has won!");
+                
                 return true;
+            } else {
+                System.out.println("Player 2 hasn't won.");
+                return false;
             }
         }
         // Check diagonals
         if ((board[0][0] == p2 && board[1][1] == p2 && board[2][2] == p2) ||
         (board[0][2] == p2 && board[1][1] == p2 && board[2][0] == p2)) {
+            System.out.println("Player 2 has won!");
+            
             return true;
+        } else {
+            System.out.println("Player 2 hasn't won.");
+            return false;
         }
-        return false;
     }
     
     public void saveGame() {
@@ -169,7 +194,6 @@ public class noughtsCrosses
         String hrm = kb.nextLine();
         if (hrm == "yes") {
             System.out.println("Now saving game!");
-            File save = new File("last_save.txt");
             try {
                 FileWriter fw = new FileWriter(save);
                 for (int i = 0; i < board.length; i++) { // initializes grid
@@ -183,6 +207,23 @@ public class noughtsCrosses
             } catch (IOException e) {
                 System.out.println("Error: game could not be saved");
             }
+        }
+    }
+    
+    public void loadGame() {
+        System.out.println("Before we begin, would you like to load your last saved game?");
+        String load = kb.nextLine();
+        if (load == "yes") {
+            try { 
+                Scanner read = new Scanner(save);
+                while (read.hasNextLine()) {
+                    System.out.println(read.nextLine());
+                }
+            } catch (IOException e) {
+                System.out.println("Error: could not read file");
+            }
+        } else {
+            System.out.println("Okay! Starting new game...");
         }
     }
 }

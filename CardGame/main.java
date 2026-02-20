@@ -1,6 +1,9 @@
 
 /**
  * This creates new objects in cahoots with the Card class
+ * 
+ * Issues:
+ * Not sure how to call value of a suit in here...
  *
  * @author Kanya Farley
  * @version 20/02/2026
@@ -21,17 +24,22 @@ public class main
         
         // prints random face
         String randomFace = faces[random.nextInt(faces.length)];
-        System.out.println(randomFace);
+        //System.out.println(randomFace);
         
         // prints random suit
-        String randomSuit = suits[random.nextInt(faces.length)];
-        System.out.println(randomSuit);
+        String randomSuit = suits[random.nextInt(suits.length)];
+        //System.out.println(randomSuit);
+        
+        
         
         // creates new random card
         Card card1 = new Card(randomFace, randomSuit);
-        
+        System.out.println(card1.getSuit());
+        System.out.println(card1.getFace() + " (Value: " + card1.getValue() + ")");
         //for (int i = 0; i < Card.size; i++) {
             
         //}
     }
+    
+    
 }

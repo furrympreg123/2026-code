@@ -6,7 +6,7 @@
  * Returns inaccurate value for second constructor's face
  *
  * @author Kanya Farley
- * @version 20/02/2026
+ * @version 23/02/2026
  */
 import java.util.Random;
 public class Card {

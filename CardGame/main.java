@@ -1,12 +1,9 @@
 
 /**
  * This creates new objects in cahoots with the Card class
- * 
- * Issues:
- * Not sure how to call value of a suit in here...
  *
  * @author Kanya Farley
- * @version 20/02/2026
+ * @version 23/02/2026
  */
 import java.util.Random;
 import java.util.ArrayList;
@@ -14,7 +11,6 @@ import java.util.Arrays;
 import java.util.Scanner;
 public class main
 {
-    Scanner kb = new Scanner(System.in);
     /**
      * Constructor for objects of class main
      */
@@ -23,6 +19,7 @@ public class main
         Random random = new Random();
         String[] suits = {"Hearts", "Clubs", "Diamonds", "Spades"};
         String[] faces = {"Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"};
+        Scanner kb = new Scanner(System.in);
         
         // prints random face
         String randomFace = faces[random.nextInt(faces.length)];
@@ -41,6 +38,18 @@ public class main
         //for (int i = 0; i < Card.size; i++) {
             
         //}
+        
+        Card card2 = new Card();
+        System.out.println(card2);
+        
+        Card card3 = new Card();
+        System.out.println(card3);
+        
+        Card card4 = new Card();
+        System.out.println(card4);
+        
+        System.out.println("How many cards would you like me to print?");
+        int cards = kb.nextInt();
     }
     
     

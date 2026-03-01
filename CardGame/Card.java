@@ -3,18 +3,19 @@
  * This provides the constructor with attributes for generating cards
  * 
  * Current problems:
- * Returns inaccurate value for second constructor's face
+ * .getValue() returns 0 whereas .valueOfFace() returns the right value!
  *
  * @author Kanya Farley
- * @version 23/02/2026
+ * @version 26/02/2026
  */
 import java.util.Random;
+import java.util.ArrayList;
 public class Card {
     private String faces;
     private String suits;
     
-    private static String[] suit = {"Hearts", "Clubs", "Diamonds", "Spades"};
-    private static String[] face = {"Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"};
+    static String[] suit = {"Hearts", "Clubs", "Diamonds", "Spades"};
+    static String[] face = {"Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"};
     
     private int value;
     Random r = new Random();
@@ -33,13 +34,13 @@ public class Card {
         
         // get random suit
         int randSuits = r.nextInt(suit.length);
-        String randSuit = suit[randSuits];
+        this.suits = suit[randSuits];
         
         // get random face
         int randFaces = r.nextInt(face.length);
-        String randFace = face[randFaces];
+        this.faces = face[randFaces];
         
-        System.out.println(randFace + randSuit + " Value : " + valueOfFace2());
+        System.out.println(faces + " " + suits + " Value : " + valueOfFace());
     }
     
     public String getFace() {
@@ -52,6 +53,7 @@ public class Card {
     
     // defines values based on face
     public int valueOfFace() {
+        int value = 0;
         switch (this.faces) {
             case "Ace" : value = 1;
                 break;
@@ -83,41 +85,7 @@ public class Card {
         return value;
     }
     
-    public int valueOfFace2() {
-        for (int i = 0; i < face.length; i++) {
-            switch (face[i]) {
-                case "Ace" : value = 1;
-                    break;
-                case "2" : value = 2;
-                    break;
-                case "3" : value = 3;
-                    break;
-                case "4" : value = 4;
-                    break;
-                case "5" : value = 5;
-                    break;
-                case "6" : value = 6;
-                    break;
-                case "7" : value = 7;
-                    break;
-                case "8" : value = 8;
-                    break;
-                case "9" : value = 9;
-                    break;
-                case "10" : value = 10;
-                    break;
-                case "Jack" : value = 10;
-                    break;
-                case "Queen" : value = 10;
-                    break;
-                case "King" : value = 10;
-                    break;
-            }
-        }
-        return value; // always returns as index rather than case
-    }
-    
-    public int getValue() {
+    public int getValue() { // returns 0 every time... somethings wrong
         return(this.value);
     }
 }

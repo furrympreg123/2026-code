@@ -3,7 +3,7 @@
  * This creates new objects in cahoots with the Card class
  *
  * @author Kanya Farley
- * @version 02/03/2026
+ * @version 05/03/2026
  */
 import java.util.Random;
 import java.util.ArrayList;
@@ -46,6 +46,8 @@ public class main
         hi.printDeck();
         hi.shuffle();
         hi.printDeck();
+        hi.writeDeck();
+        
         
     }
     
@@ -66,37 +68,61 @@ public class main
         for (int i = 0; i < cardCreator.size(); i++) {
             Card currentCard = cardCreator.get(i);
             System.out.println(currentCard.getFace() + " " + currentCard.getSuit());
-            System.out.println("Value : " + currentCard.valueOfFace()); // it's always 0??
+            System.out.println("Value : " + currentCard.getValue()); // it's always 0??
         }
 
         // adds card values up
         int totalValue = 0;
         for (int i = 0; i < cardCreator.size(); i++) {
             Card currentCard = cardCreator.get(i);
-            totalValue += currentCard.valueOfFace();
+            totalValue += currentCard.getValue();
         }
         System.out.println(totalValue);
     }
     
     // this allows user to decide if they want to add another random card to an array or finish it
-    public static void userUnsure () {
-
+    public static void blackJack () {
         Scanner kb = new Scanner(System.in);
         boolean active = true;
+        int totalValue = 0;
+        Deck dealer = new Deck(); // initializes a new deck
+        
+        // introduction
+        System.out.println("Welcome to Black Jack!");
+        System.out.println("The rules of the game are that the total value of your cards must add up to");
+        System.out.println("'21', or as close to 21 as possible.");
+        dealer.shuffle();
         ArrayList<Card>cardCreator = new ArrayList<Card>();
         while (active) {
-            System.out.println("Add another random card? Type 'yes' or 'no'");
+            System.out.println("Hit or stand? Type 'yes' to hit or 'no' to stand");
             String input = kb.nextLine();
             if (input.equals("yes") || input.equals("YES") || input.equals("Yes")) {
                 cardCreator.add(new Card());
-                
-                // fetches + prints new card
+                totalValue = 0;
+                // fetches + prints new card, gets and adds up total value
                 for (int i = 0; i < cardCreator.size(); i++) {
                     Card currentCard = cardCreator.get(i);
+                    dealer.popCard(); // how do i get it to get rid of specified card? currentCard and i doesnt work
+                    totalValue += currentCard.getValue();
+                }
+                System.out.println("Total value: " + totalValue);
+                
+                // checks for loss
+                if (totalValue > 21) {
+                    System.out.println("You have lost! Total exceeds 21 by " + (totalValue - 21));
+                    active = false;
                 }
             } else if (input.equals("no") || input.equals("NO") || input.equals("No")) {
                 System.out.println("Okay!");
                 active = false; // stops loop
+                System.out.println("Total value: " + totalValue);
+                
+                // checks for win
+                if (totalValue == 21) {
+                    System.out.println("Congrats! Your total is exactly 21! You have won.");
+                } else if (totalValue < 21) {
+                    System.out.println("Your total value is " + (totalValue - 21) + " from 21. Good game!");
+                }
             } else {
                 System.out.println("Sorry, I don't understand...");
             }

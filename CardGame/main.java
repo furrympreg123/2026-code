@@ -1,6 +1,6 @@
 
 /**
- * This creates new objects in cahoots with the Card class
+ * This creates new objects in cahoots with the Card class + Dealer class
  *
  * @author Kanya Farley
  * @version 05/03/2026
@@ -79,8 +79,7 @@ public class main
         }
         System.out.println(totalValue);
     }
-    
-    // this allows user to decide if they want to add another random card to an array or finish it
+
     public static void blackJack () {
         Scanner kb = new Scanner(System.in);
         boolean active = true;
@@ -120,8 +119,10 @@ public class main
                 // checks for win
                 if (totalValue == 21) {
                     System.out.println("Congrats! Your total is exactly 21! You have won.");
+                    dealer.writeDeck();
                 } else if (totalValue < 21) {
                     System.out.println("Your total value is " + (totalValue - 21) + " from 21. Good game!");
+                    dealer.writeDeck();
                 }
             } else {
                 System.out.println("Sorry, I don't understand...");

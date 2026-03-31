@@ -107,6 +107,7 @@ public class Bank
                 userInput = userInput.toLowerCase();
                 if (userInput.equals("yes")) {
                     double newBalance = thisAccount.getCurrentBalance() + deposit;
+                    // not sure how to apply to 1 argument in object?? look at older examples
                 } else if (userInput.equals("no")) {
                     System.out.println("Operation cancelled.");
                 }

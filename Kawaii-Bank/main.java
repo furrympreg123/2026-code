@@ -128,7 +128,7 @@ public class main
         String customerName = kb.nextLine();*/ // Will do if time
         System.out.println("Current accounts: ");
         accounts.displayAll();
-        
+
     }
 
     public void depositToAccount() {
@@ -140,7 +140,7 @@ public class main
         double amount = kb.nextDouble();
         accounts.deposit(accountNumber, amount);
     }
-    
+
     public void withdrawFromAccount() {
         System.out.println("Current accounts: ");
         accounts.displayAll();
@@ -148,11 +148,16 @@ public class main
         String accountNumber = kb.nextLine();
         System.out.println("Enter amount to withdraw: $");
         double amount = kb.nextDouble();
-        if (amount == MAX_WITHDRAWAL) {
-            System.out.println("Sorry, max withdrawal is " + MAX_WITHDRAWAL);
-            System.out.println("Please try again."); // fix to be better
-        } else { 
-            accounts.withdraw(accountNumber, amount);
+        boolean amountValidity = false;
+        while (!amountValidity) {
+            if (amount >= MAX_WITHDRAWAL) {
+                amountValidity = false;
+                System.out.println("Sorry, max withdrawal is " + MAX_WITHDRAWAL);
+                System.out.println("Please try again.");
+            } else { 
+                amountValidity = true;
+                accounts.withdraw(accountNumber, amount);
+            }
         }
     }
 

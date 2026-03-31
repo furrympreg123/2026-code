@@ -7,7 +7,6 @@
  */
 public class Account
 {
-    // not sure what to make private yet...
     String customerName;
     String accountNumber;
     String customerAddress;

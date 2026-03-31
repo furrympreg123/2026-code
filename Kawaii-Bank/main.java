@@ -2,9 +2,6 @@
 /**
  * Creates and manages accounts
  * 
- * Current errors
- * Program gets confused about amount of items in accountarchive? txt file is fine
- *
  * @author Kanya Farley
  * @version 31/03
  */
@@ -40,6 +37,10 @@ public class main
             closeAccount();
         } else if (userAction.equals("3")) {
             checkAccount();
+        } else if (userAction.equals("4")) {
+            depositToAccount();
+        } else if (userAction.equals("5")) {
+            withdrawFromAccount();
         } else {
             String regex = ("1|2|3|4|5");
             while (!userAction.matches(regex) && userAction.length() > 1) { // ensures user hasn't entered an option and can matche no more than 1 character
@@ -93,9 +94,11 @@ public class main
         while (!balanceValidity) {
             if (accountType.equals("everyday") && currentBalance < EVERYDAY_SAVINGS_MIN || accountType.equals("savings") && currentBalance < EVERYDAY_SAVINGS_MIN) {
                 System.out.println("Sorry, minimum balance for " + accountType + " account is " + EVERYDAY_SAVINGS_MIN);
+                System.out.println("Please try again.");
                 currentBalance = kb.nextDouble();
             } else if (accountType.equals("current") && currentBalance < CURRENT_MIN) {
                 System.out.println("Sorry, minimum balance for " + accountType + " account is " + CURRENT_MIN);
+                System.out.println("Please try again.");
                 currentBalance = kb.nextDouble();
             } else {
                 balanceValidity = true;
@@ -121,12 +124,36 @@ public class main
     }
 
     public void checkAccount() {
+        /*System.out.println("Enter customer name (exactly as formatted): ");
+        String customerName = kb.nextLine();*/ // Will do if time
         System.out.println("Current accounts: ");
         accounts.displayAll();
+        
     }
 
     public void depositToAccount() {
-        
+        System.out.println("Current accounts: ");
+        accounts.displayAll();
+        System.out.println("Enter account number to deposit money into: ");
+        String accountNumber = kb.nextLine();
+        System.out.println("Enter amount to deposit: $");
+        double amount = kb.nextDouble();
+        accounts.deposit(accountNumber, amount);
+    }
+    
+    public void withdrawFromAccount() {
+        System.out.println("Current accounts: ");
+        accounts.displayAll();
+        System.out.println("Enter account number to withdraw money from: ");
+        String accountNumber = kb.nextLine();
+        System.out.println("Enter amount to withdraw: $");
+        double amount = kb.nextDouble();
+        if (amount == MAX_WITHDRAWAL) {
+            System.out.println("Sorry, max withdrawal is " + MAX_WITHDRAWAL);
+            System.out.println("Please try again."); // fix to be better
+        } else { 
+            accounts.withdraw(accountNumber, amount);
+        }
     }
 
 }

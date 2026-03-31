@@ -1,10 +1,6 @@
 
 /**
  * Saves and stores accounts
- * 
- * Current problems:
- * 
- * closeAccount method's loop is flawed
  *
  * @author Kanya Farley
  * @version 31/03
@@ -17,7 +13,8 @@ import java.util.Scanner;
 import java.util.Collections;
 public class Bank
 {
-    public ArrayList<Account> accounts = new ArrayList<Account>(); // made public for accessability??
+    private ArrayList<Account> accounts = new ArrayList<Account>();
+    
     /**
      * Constructor for objects of class AccountCreator
      */
@@ -93,6 +90,35 @@ public class Bank
         if (!found) {
             System.out.println("Sorry, that account number does not exist within our records.");
         }
+    }
+    
+    void deposit(String accountNumber, double deposit) {
+        Scanner kb = new Scanner(System.in);
+        ArrayList<Account> tempAccounts = new ArrayList<>(accounts); // to avoid concurrent modification
+        boolean found = false;
+        for (Account thisAccount: accounts) {
+            if (accountNumber.equals(thisAccount.getAccountNumber())) {
+                found = true;
+                String accountType = thisAccount.getAccountType();
+                System.out.println(thisAccount.getCustomerName() + " " + thisAccount.getAccountType() + " is the account you're looking for.");
+                System.out.println("It currently has a balance of $" + thisAccount.getCurrentBalance());
+                System.out.println("Would you like to deposit exactly $" + deposit + " into this account? Enter 'yes' or 'no'");
+                String userInput = kb.nextLine();
+                userInput = userInput.toLowerCase();
+                if (userInput.equals("yes")) {
+                    double newBalance = thisAccount.getCurrentBalance() + deposit;
+                } else if (userInput.equals("no")) {
+                    System.out.println("Operation cancelled.");
+                }
+            }
+        }
+        if (!found) {
+            System.out.println("Sorry, that account number does not exist within our records.");
+        }
+    }
+    
+    void withdraw(String accountNumber, double withdraw) {
+        
     }
     
     void displayAll() {

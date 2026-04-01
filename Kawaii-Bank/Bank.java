@@ -3,7 +3,7 @@
  * Saves and stores accounts
  *
  * @author Kanya Farley
- * @version 1/04
+ * @version 02/04
  */
 import java.util.ArrayList;
 import java.io.IOException;
@@ -132,13 +132,12 @@ public class Bank
                             if (kb.hasNextDouble()) {
                                 deposit = kb.nextDouble();
                                 inputValidity = true;
+                                kb.nextLine(); // clears buffer
                             } else {
                                 System.out.println("Invalid. Please enter an arabic numeral.");
                                 input = kb.nextLine();
                             }
                         }
-
-                        kb.nextLine(); // clears buffer
                         calculation = thisAccount.getCurrentBalance() + deposit; // calculation for new deposit amount
                     } else if (accountType.equals("current") && calculation < CURRENT_MIN) {
                         System.out.println("Sorry, minimum balance for " + accountType + " account is " + CURRENT_MIN);
@@ -150,12 +149,12 @@ public class Bank
                             if (kb.hasNextDouble()) {
                                 deposit = kb.nextDouble();
                                 inputValidity = true;
+                                kb.nextLine(); // clears buffer
                             } else {
                                 System.out.println("Invalid. Please enter an arabic numeral.");
                                 input = kb.nextLine();
                             }
                         }
-                        kb.nextLine(); // clears buffer
                         calculation = thisAccount.getCurrentBalance() + deposit; // calculation for new deposit amount
                     } else {
                         balanceValidity = true;
@@ -213,12 +212,12 @@ public class Bank
                             if (kb.hasNextDouble()) {
                                 withdraw = kb.nextDouble();
                                 inputValidity = true;
+                                kb.nextLine(); // clears buffer
                             } else {
                                 System.out.println("Invalid. Please enter an arabic numeral.");
                                 input = kb.nextLine();
                             }
                         }
-                        kb.nextLine(); // clears buffer
                         calculation = thisAccount.getCurrentBalance() - withdraw; // calculation for new withdrawal amount
                     } else if (accountType.equals("current") && calculation < CURRENT_MIN) {
                         System.out.println("Sorry, minimum balance for " + accountType + " account is " + CURRENT_MIN);
@@ -230,19 +229,19 @@ public class Bank
                             if (kb.hasNextDouble()) {
                                 withdraw = kb.nextDouble();
                                 inputValidity = true;
+                                kb.nextLine(); // clears buffer
                             } else {
                                 System.out.println("Invalid. Please enter an arabic numeral.");
                                 input = kb.nextLine();
                             }
                         }
-                        kb.nextLine(); // clears buffer
                         calculation = thisAccount.getCurrentBalance() - withdraw; // calculation for new withdrawal amount
                     } else {
                         balanceValidity = true;
                     }
                 }
 
-                System.out.println("Would you like to withdraw exactly $" + withdraw + " into this account? Enter 'yes' or 'no'");
+                System.out.println("Would you like to withdraw exactly $" + withdraw + " from this account? Enter 'yes' or 'no'");
                 String userInput = kb.nextLine();
                 userInput = userInput.toLowerCase();
                 boolean inputValidity = false;
@@ -292,7 +291,6 @@ public class Bank
     }
 
     void displayAll() {
-        //System.out.println(accounts.size()); // debugging
         for(Account currentAccount: accounts) {
             System.out.println(currentAccount.toString());
         }

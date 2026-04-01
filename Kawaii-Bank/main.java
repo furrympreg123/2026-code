@@ -3,7 +3,7 @@
  * Creates and manages accounts
  * 
  * @author Kanya Farley
- * @version 1/04
+ * @version 02/04
  */
 import java.util.Scanner;
 import java.util.Random;
@@ -21,6 +21,7 @@ public class main
     // end of day stats
     double depositTotal = 0;
     double withdrawalTotal = 0;
+    boolean running = true;
 
     /**
      * Constructor for objects of class main
@@ -29,11 +30,11 @@ public class main
     {
         accounts.loadFromFile();
         System.out.println("Welcome to Kawaii-Bank account management!");
+        System.out.println("WARNING!! May have to enter input twice in some areas of the program.");
         start();
     }
 
     public void start() {
-        boolean running = true;
         while (running) {
             System.out.println("What would you like to do? (Enter number for option)");
 
@@ -56,6 +57,7 @@ public class main
                 withdrawFromAccount();
             } else if (userAction.equals("6")) {
                 end();
+                running = false;
             } else {
                 System.out.println("Please enter '1', '2', '3', '4', or '5' in accordance with program options.");
             }
@@ -108,6 +110,7 @@ public class main
             if (kb.hasNextDouble()) {
                 currentBalance = kb.nextDouble();
                 typeValidity = true;
+                kb.nextLine(); // clears buffer
             } else {
                 System.out.println("Invalid. Please enter arabic numerals only.");
                 input = kb.nextLine();
@@ -119,11 +122,33 @@ public class main
             if (accountType.equals("everyday") && currentBalance < EVERYDAY_SAVINGS_MIN || accountType.equals("savings") && currentBalance < EVERYDAY_SAVINGS_MIN) {
                 System.out.println("Sorry, minimum balance for " + accountType + " account is " + EVERYDAY_SAVINGS_MIN);
                 System.out.println("Please try again.");
-                currentBalance = kb.nextDouble();
+                currentBalance = 0;
+                typeValidity = false;
+                while (!typeValidity) {
+                    if (kb.hasNextDouble()) {
+                        currentBalance = kb.nextDouble();
+                        typeValidity = true;
+                        kb.nextLine(); // clears buffer
+                    } else {
+                        System.out.println("Invalid. Please enter arabic numerals only.");
+                        input = kb.nextLine();
+                    }
+                }
             } else if (accountType.equals("current") && currentBalance < CURRENT_MIN) {
                 System.out.println("Sorry, minimum balance for " + accountType + " account is " + CURRENT_MIN);
                 System.out.println("Please try again.");
-                currentBalance = kb.nextDouble();
+                currentBalance = 0;
+                typeValidity = false;
+                while (!typeValidity) {
+                    if (kb.hasNextDouble()) {
+                        currentBalance = kb.nextDouble();
+                        typeValidity = true;
+                        kb.nextLine(); // clears buffer
+                    } else {
+                        System.out.println("Invalid. Please enter arabic numerals only.");
+                        input = kb.nextLine();
+                    }
+                }
             } else {
                 balanceValidity = true;
             }
@@ -137,7 +162,6 @@ public class main
         System.out.println("Account added to list: ");
         accounts.displayAll();
         accounts.saveToFile(" ");
-        kb.nextLine(); // clears buffer
         start();
     }
 
@@ -148,7 +172,6 @@ public class main
         String accountNumber = kb.nextLine();
         accounts.closeAccount(accountNumber);
         accounts.saveToFile(" ");
-        kb.nextLine(); // clears buffer
         start();
     }
 
@@ -171,6 +194,7 @@ public class main
             if (kb.hasNextDouble()) {
                 amount = kb.nextDouble();
                 inputValidity = true;
+                kb.nextLine(); // clears buffer
             } else {
                 System.out.println("Invalid. Please enter an arabic numeral.");
                 input = kb.nextLine();
@@ -179,7 +203,6 @@ public class main
         accounts.deposit(accountNumber, amount);
         depositTotal += amount;
         accounts.saveToFile(" ");
-        kb.nextLine(); // clears buffer
         start();
     }
 
@@ -196,6 +219,7 @@ public class main
             if (kb.hasNextDouble()) {
                 amount = kb.nextDouble();
                 inputValidity = true;
+                kb.nextLine(); // clears buffer
             } else {
                 System.out.println("Invalid. Please enter arabic numerals.");
                 input = kb.nextLine();
@@ -209,6 +233,7 @@ public class main
                 System.out.println("Sorry, max withdrawal is " + MAX_WITHDRAWAL);
                 System.out.println("Please try again.");
                 amount = kb.nextDouble();
+                kb.nextLine(); // clears buffer
             } else { 
                 amountValidity = true;
                 accounts.withdraw(accountNumber, amount);
@@ -216,7 +241,6 @@ public class main
         }
         withdrawalTotal += amount;
         accounts.saveToFile(" ");
-        kb.nextLine(); // clears buffer
         start();
     }
 

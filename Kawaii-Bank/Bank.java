@@ -14,9 +14,13 @@ import java.util.Collections;
 public class Bank
 {
     private ArrayList<Account> accounts = new ArrayList<Account>();
+
+    // account type boundaries
     final double EVERYDAY_SAVINGS_MIN = 0;
     final double CURRENT_MIN = -1000;
     final double MAX_WITHDRAWAL = 5000;
+
+    // end of day stats
     double depositTotal = 0;
     double withdrawalTotal = 0;
     /**
@@ -80,14 +84,21 @@ public class Bank
                 System.out.println("Would you like to delete it? Enter 'yes' or 'no'");
                 String userInput = kb.nextLine();
                 userInput = userInput.toLowerCase();
-                if (userInput.equals("yes")) {
-                    this.removeAccount(thisAccount); // removes from archive
-                    System.out.println("Account " + thisAccount.getAccountNumber() + " deleted!");
-                    this.saveToFile(" "); // changes are saved
-                } else if (userInput.equals("no")) {
-                    System.out.println("Operation cancelled.");
-                } else {
-                    System.out.println("Sorry, I don't understand.");
+                boolean inputValidity = false;
+                while (!inputValidity) {
+                    if (userInput.equals("yes")) {
+                        this.removeAccount(thisAccount); // removes from archive
+                        System.out.println("Account " + thisAccount.getAccountNumber() + " deleted!");
+                        this.saveToFile(" "); // changes are saved
+                        inputValidity = true;
+                    } else if (userInput.equals("no")) {
+                        System.out.println("Operation cancelled.");
+                        inputValidity = true;
+                    } else {
+                        System.out.println("Sorry, I don't understand.");
+                        userInput = kb.nextLine();
+                        userInput = userInput.toLowerCase();
+                    }
                 }
             }
         }
@@ -107,37 +118,68 @@ public class Bank
                 String accountType = thisAccount.getAccountType();
                 System.out.println(thisAccount.getCustomerName() + " " + thisAccount.getAccountType() + " is the account you're looking for.");
                 System.out.println("It currently has a balance of $" + thisAccount.getCurrentBalance());
-                
-                double calculation = thisAccount.getCurrentBalance() + deposit;
+
+                double calculation = thisAccount.getCurrentBalance() + deposit; // first input
                 boolean balanceValidity = false;
                 while (!balanceValidity) {
                     if (accountType.equals("everyday") && calculation < EVERYDAY_SAVINGS_MIN || accountType.equals("savings") && calculation < EVERYDAY_SAVINGS_MIN) {
                         System.out.println("Sorry, minimum balance for " + accountType + " account is " + EVERYDAY_SAVINGS_MIN);
                         System.out.println("Please reenter deposit amount: $");
-                        deposit = kb.nextDouble();
+                        String input = kb.nextLine();
+                        deposit = 0;
+                        boolean inputValidity = false;
+                        while (!inputValidity) {
+                            if (kb.hasNextDouble()) {
+                                deposit = kb.nextDouble();
+                                inputValidity = true;
+                            } else {
+                                System.out.println("Invalid. Please enter an arabic numeral.");
+                                input = kb.nextLine();
+                            }
+                        }
+
                         kb.nextLine(); // clears buffer
                         calculation = thisAccount.getCurrentBalance() + deposit; // calculation for new deposit amount
                     } else if (accountType.equals("current") && calculation < CURRENT_MIN) {
                         System.out.println("Sorry, minimum balance for " + accountType + " account is " + CURRENT_MIN);
                         System.out.println("Please reenter deposit amount: $");
-                        deposit = kb.nextDouble();
+                        String input = kb.nextLine();
+                        deposit = 0;
+                        boolean inputValidity = false;
+                        while (!inputValidity) {
+                            if (kb.hasNextDouble()) {
+                                deposit = kb.nextDouble();
+                                inputValidity = true;
+                            } else {
+                                System.out.println("Invalid. Please enter an arabic numeral.");
+                                input = kb.nextLine();
+                            }
+                        }
                         kb.nextLine(); // clears buffer
                         calculation = thisAccount.getCurrentBalance() + deposit; // calculation for new deposit amount
                     } else {
                         balanceValidity = true;
                     }
                 }
-                
+
                 System.out.println("Would you like to deposit exactly $" + deposit + " into this account? Enter 'yes' or 'no'");
                 String userInput = kb.nextLine();
                 userInput = userInput.toLowerCase();
-
-                if (userInput.equals("yes")) {
-                    double newBalance = thisAccount.getCurrentBalance() + deposit;
-                    Account newAccount = new Account(thisAccount.getCustomerName(), thisAccount.getAccountNumber(), thisAccount.getCustomerAddress(), thisAccount.getAccountType(), newBalance);
-                    accounts.set(i, newAccount);
-                } else if (userInput.equals("no")) {
-                    System.out.println("Operation cancelled.");
+                boolean inputValidity = false;
+                while (!inputValidity) {
+                    if (userInput.equals("yes")) {
+                        double newBalance = thisAccount.getCurrentBalance() + deposit;
+                        Account newAccount = new Account(thisAccount.getCustomerName(), thisAccount.getAccountNumber(), thisAccount.getCustomerAddress(), thisAccount.getAccountType(), newBalance);
+                        accounts.set(i, newAccount);
+                        inputValidity = true;
+                    } else if (userInput.equals("no")) {
+                        System.out.println("Operation cancelled.");
+                        inputValidity = true;
+                    } else {
+                        System.out.println("Sorry, I don't understand.");
+                        userInput = kb.nextLine();
+                        userInput = userInput.toLowerCase();
+                    }
                 }
             }
         }
@@ -157,37 +199,67 @@ public class Bank
                 String accountType = thisAccount.getAccountType();
                 System.out.println(thisAccount.getCustomerName() + " " + thisAccount.getAccountType() + " is the account you're looking for.");
                 System.out.println("It currently has a balance of $" + thisAccount.getCurrentBalance());
-                
+
                 double calculation = thisAccount.getCurrentBalance() - withdraw;
                 boolean balanceValidity = false;
                 while (!balanceValidity) {
                     if (accountType.equals("everyday") && calculation < EVERYDAY_SAVINGS_MIN || accountType.equals("savings") && calculation < EVERYDAY_SAVINGS_MIN) {
                         System.out.println("Sorry, minimum balance for " + accountType + " account is " + EVERYDAY_SAVINGS_MIN);
                         System.out.println("Please reenter withdrawal amount: $");
-                        withdraw = kb.nextDouble();
+                        String input = kb.nextLine();
+                        withdraw = 0;
+                        boolean inputValidity = false;
+                        while (!inputValidity) {
+                            if (kb.hasNextDouble()) {
+                                withdraw = kb.nextDouble();
+                                inputValidity = true;
+                            } else {
+                                System.out.println("Invalid. Please enter an arabic numeral.");
+                                input = kb.nextLine();
+                            }
+                        }
                         kb.nextLine(); // clears buffer
                         calculation = thisAccount.getCurrentBalance() - withdraw; // calculation for new withdrawal amount
                     } else if (accountType.equals("current") && calculation < CURRENT_MIN) {
                         System.out.println("Sorry, minimum balance for " + accountType + " account is " + CURRENT_MIN);
                         System.out.println("Please reenter withdrawal amount: $");
-                        withdraw = kb.nextDouble();
+                        String input = kb.nextLine();
+                        withdraw = 0;
+                        boolean inputValidity = false;
+                        while (!inputValidity) {
+                            if (kb.hasNextDouble()) {
+                                withdraw = kb.nextDouble();
+                                inputValidity = true;
+                            } else {
+                                System.out.println("Invalid. Please enter an arabic numeral.");
+                                input = kb.nextLine();
+                            }
+                        }
                         kb.nextLine(); // clears buffer
                         calculation = thisAccount.getCurrentBalance() - withdraw; // calculation for new withdrawal amount
                     } else {
                         balanceValidity = true;
                     }
                 }
-                
+
                 System.out.println("Would you like to withdraw exactly $" + withdraw + " into this account? Enter 'yes' or 'no'");
                 String userInput = kb.nextLine();
                 userInput = userInput.toLowerCase();
-                
-                if (userInput.equals("yes")) {
-                    double newBalance = thisAccount.getCurrentBalance() - withdraw;
-                    Account newAccount = new Account(thisAccount.getCustomerName(), thisAccount.getAccountNumber(), thisAccount.getCustomerAddress(), thisAccount.getAccountType(), newBalance);
-                    accounts.set(i, newAccount);
-                } else if (userInput.equals("no")) {
-                    System.out.println("Operation cancelled.");
+                boolean inputValidity = false;
+                while (!inputValidity) {
+                    if (userInput.equals("yes")) {
+                        double newBalance = thisAccount.getCurrentBalance() - withdraw;
+                        Account newAccount = new Account(thisAccount.getCustomerName(), thisAccount.getAccountNumber(), thisAccount.getCustomerAddress(), thisAccount.getAccountType(), newBalance);
+                        accounts.set(i, newAccount);
+                        inputValidity = true;
+                    } else if (userInput.equals("no")) {
+                        System.out.println("Operation cancelled.");
+                        inputValidity = true;
+                    } else {
+                        System.out.println("Sorry, I don't understand.");
+                        userInput = kb.nextLine();
+                        userInput = userInput.toLowerCase();
+                    }
                 }
             }
         }
@@ -203,17 +275,17 @@ public class Bank
         }
         return sum;
     }
-    
+
     void saveDayDataToFile(double sum, double depositTotal, double withdrawalTotal) {
         File file = new File("Previous day data.txt");
         try {
             FileWriter writer = new FileWriter(file);
             writer.write("Total amount in bank: $" + sum +
-            ". Total deposited today: $" + depositTotal + ". Total withdrawn today: $"
-            + withdrawalTotal);
+                ". Total deposited today: $" + depositTotal + ". Total withdrawn today: $"
+                + withdrawalTotal);
             writer.flush();
             writer.close();
-            
+
         } catch (IOException e) {
             System.out.println("Error: " + e);
         }

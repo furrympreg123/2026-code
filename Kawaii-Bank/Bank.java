@@ -115,10 +115,14 @@ public class Bank
                         System.out.println("Sorry, minimum balance for " + accountType + " account is " + EVERYDAY_SAVINGS_MIN);
                         System.out.println("Please reenter deposit amount: $");
                         deposit = kb.nextDouble();
+                        kb.nextLine(); // clears buffer
+                        calculation = thisAccount.getCurrentBalance() + deposit; // calculation for new deposit amount
                     } else if (accountType.equals("current") && calculation < CURRENT_MIN) {
                         System.out.println("Sorry, minimum balance for " + accountType + " account is " + CURRENT_MIN);
                         System.out.println("Please reenter deposit amount: $");
                         deposit = kb.nextDouble();
+                        kb.nextLine(); // clears buffer
+                        calculation = thisAccount.getCurrentBalance() + deposit; // calculation for new deposit amount
                     } else {
                         balanceValidity = true;
                     }
@@ -161,10 +165,14 @@ public class Bank
                         System.out.println("Sorry, minimum balance for " + accountType + " account is " + EVERYDAY_SAVINGS_MIN);
                         System.out.println("Please reenter withdrawal amount: $");
                         withdraw = kb.nextDouble();
+                        kb.nextLine(); // clears buffer
+                        calculation = thisAccount.getCurrentBalance() - withdraw; // calculation for new withdrawal amount
                     } else if (accountType.equals("current") && calculation < CURRENT_MIN) {
                         System.out.println("Sorry, minimum balance for " + accountType + " account is " + CURRENT_MIN);
                         System.out.println("Please reenter withdrawal amount: $");
                         withdraw = kb.nextDouble();
+                        kb.nextLine(); // clears buffer
+                        calculation = thisAccount.getCurrentBalance() - withdraw; // calculation for new withdrawal amount
                     } else {
                         balanceValidity = true;
                     }
@@ -197,7 +205,7 @@ public class Bank
     }
     
     void saveDayDataToFile(double sum, double depositTotal, double withdrawalTotal) {
-        File file = new File("Day data.txt");
+        File file = new File("Previous day data.txt");
         try {
             FileWriter writer = new FileWriter(file);
             writer.write("Total amount in bank: $" + sum +

@@ -114,7 +114,7 @@ public class main
                 balanceValidity = true;
             }
         }
-
+        
         // creating object, verifying, and saving
         Account newAccount = new Account(customerName, accountNumber, customerAddress, accountType, currentBalance);
         System.out.println(customerName + "; " + accountNumber + "; " + customerAddress + "; " + accountType + "; " + "$" + currentBalance);
@@ -187,7 +187,7 @@ public class main
     
     public void end() {
         double sum = accounts.total();
-        System.out.print("Total amount in bank: " + sum);
+        System.out.println("Total amount in bank: " + sum);
         System.out.println("Total amount deposited today: $" + depositTotal);
         System.out.println("Total amount withdrawn today: $" + withdrawalTotal);
         accounts.saveDayDataToFile(sum, depositTotal, withdrawalTotal);

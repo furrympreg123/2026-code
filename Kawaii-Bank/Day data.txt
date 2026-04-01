@@ -1,1 +1,1 @@
-Total amount in bank: $0.0. Total deposited today: $51.0. Total withdrawn today: $400.0
+Total amount in bank: $-249.94. Total deposited today: $200.0. Total withdrawn today: $0.0

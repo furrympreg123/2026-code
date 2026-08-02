@@ -61,7 +61,12 @@ public class main
         UI.setWindowSize(1098, 672);
         UI.drawImage("kitchen_DHP.jpeg", 0, 0);
         UI.setMouseListener(this::doMouse);
-
+        
+        UI.printf("Welcome to the Dollhouse \nPatisserie!");
+        UI.printf("\nClick the bright speech bubble to \ntake an order, and the customer \nwill wait by the other side of \nthe counter.");
+        UI.printf("\nUse the various kitchen tools to \nfind the correct steps for making \nthe recipe.");
+        UI.printf("\nOnce the message 'Order Complete!' \nappears, you may serve the waiting \ncustomer!");
+        
         while (active) {
             addOrder(oQueue);
         }
@@ -354,12 +359,10 @@ public class main
     }
 
     public void chop (String recipe) {
-        
-        
         if (recipe.equals("Cinnamon Roll")) {
             for (int i = 0; i < 5; i++) {
                 for (int j = 1; j <= 2; j++) {
-                    UI.drawImage("kitchenGUI/kitchenactionBG_DHP.png", -100, 60, 1050, 500);
+                    UI.drawImage("kitchenGUI/kitchenactionBG_DHP.png", 60, 60, 500, 500);
                     UI.drawImage("kitchenGUI/chopping1_DHP.png", 185, 200, 500, 221);
                     UI.drawImage("kitchenGUI/chopping_knife" + j + "_DHP.png", 500, 150, 150, 100);
                     UI.sleep(700);
@@ -374,7 +377,7 @@ public class main
         } else if (recipe.equals("Parfait") || recipe.equals("Fruit Tart")) {
             for (int i = 0; i < 5; i++) {
                 for (int j = 1; j <= 2; j++) {
-                    UI.drawImage("kitchenGUI/kitchenactionBG_DHP.png", -100, 60, 1050, 500);
+                    UI.drawImage("kitchenGUI/kitchenactionBG_DHP.png", 60, 60, 500, 500);
                     UI.drawImage("kitchenGUI/chopping3_DHP.png", 185, 200, 500, 221);
                     UI.drawImage("kitchenGUI/chopping_knife" + j + "_DHP.png", 500, 150, 150, 100);
                     UI.sleep(700);
@@ -385,7 +388,7 @@ public class main
             UI.sleep(1500);
             for (int i = 0; i < 5; i++) {
                 for (int j = 1; j <= 2; j++) {
-                    UI.drawImage("kitchenGUI/kitchenactionBG_DHP.png", -100, 60, 1050, 500);
+                    UI.drawImage("kitchenGUI/kitchenactionBG_DHP.png", 60, 60, 500, 500);
                     UI.drawImage("kitchenGUI/chopping5_DHP.png", 185, 200, 500, 221);
                     UI.drawImage("kitchenGUI/chopping_knife" + j + "_DHP.png", 500, 150, 150, 100);
                     UI.sleep(700);

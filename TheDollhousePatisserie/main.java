@@ -3,9 +3,14 @@
  * This is the class where the actual game actions occur
  * 
  * !! For the ecs100 library to work (and not cause compile error), BlueJ must be version 5.5.0
+ * 
+ * To-do
+ * - Fix kitchen method positions
+ * - Fridge Method
+ * - Test game thoroughly for bugs (e.g. queue stopping...)
  *
  * @author Kanya Farley
- * @version 4/8
+ * @version 5/8
  */
 import java.util.Random;
 import ecs100.*;
@@ -15,7 +20,7 @@ import java.util.ArrayList;
 
 public class main
 {
-    boolean active = true;
+    boolean active = false;
 
     String[] recipe = {"Parfait", "Fruit Tart", "Cinnamon Roll", "Cake", "Ube Cupcake", "Coffee Jelly", "Melon Float"};
     String[] sprite = {"girl1", "boy1", "girl2", "boy2", "mascot1", "mascot2"};
@@ -35,7 +40,7 @@ public class main
     Customer cust2;
     Customer cust3;
     Customer cust4;
-    boolean orderComplete = true; // turn into method??
+    boolean orderComplete = true;
 
     /* GUI */
     final int oQueueX = 252;
@@ -56,21 +61,77 @@ public class main
      */
     public void main()
     {
-        /* background GUI */
-        UI.setWindowSize(1098, 672);
-        UI.drawImage("kitchen_DHP.jpeg", 0, 0);
+        UI.setWindowSize(1098, 667);
         UI.setMouseListener(this::doMouse);
+        UI.drawImage("kitchen_DHP.jpeg", 0, 0);
 
-        UI.printf("Welcome to the Dollhouse \nPatisserie!");
-        UI.printf("\nClick the bright speech bubble to \ntake an order, and the customer \nwill wait by the other side of \nthe counter.");
-        UI.printf("\nUse the various kitchen tools to \nfind the correct steps for making \nthe recipe.");
-        UI.printf("\nOnce the message 'Order Complete!' \nappears, you may serve the waiting \ncustomer!");
-        UI.println();
+        active = false;
+        UI.drawImage("popup_DHP.png", 140, 270, 550, 320);
+        UI.setColor(Color.decode("#FFA8C7"));
+        UI.setFontSize(20);
 
+        UI.drawString("Welcome to the Dollhouse Patisserie!", 230, 365);
+        UI.drawString("Let's get started with the basics.", 210, 390);
+        UI.drawString("<-- To the left is the queue for ordering customers.", 195, 415);
+        UI.drawString("Let's serve somebody!", 200, 440);
+        UI.sleep(5000);
+
+        redrawAll();
+        oQueue.orderEnqueue(newRandomCustomer());
+        UI.setFontSize(17);
+        UI.drawImage("popup_DHP.png", 240, 120, 367, 213);
+        UI.drawString("This customer wants a " + oQueue.getFront().getRecipe() + ".", 285, 195);
+        UI.drawString("To take the order, we click the", 285, 215);
+        UI.drawString("speech bubble.", 285, 235);
+        UI.sleep(5000);
+
+        wQueue.waitingEnqueue(orderTaken(oQueue));
+        UI.drawImage("popup_DHP.png", 140, 270, 550, 320);
+        UI.setColor(Color.decode("#FFA8C7"));
+        UI.setFontSize(20);
+        UI.drawString("Once the order is taken, the above", 230, 365);
+        UI.drawString("kitchen tools can be used in accordance", 210, 390);
+        UI.drawString("with the next step on the side panel.", 200, 415);
+        UI.drawString("This customer wants a " + wQueue.getWFront().getRecipe(), 200, 440);
+        UI.drawString("So we click the " + step.get(0).toLowerCase() + " tool!", 200, 465);
+        UI.sleep(6000);
+
+        int initialSize = step.size();
+
+        switch (step.get(0)) {
+            case "Refridgerate" :
+                refridgerate(wQueue.getWFront().getRecipe());
+                break;
+            case "Chop" : 
+                chop(wQueue.getWFront().getRecipe());
+                break;
+            case "Mix" :
+                mix(wQueue.getWFront().getRecipe());
+                break;
+            case "Bake" :
+                oven(wQueue.getWFront().getRecipe());
+                break;
+            case "Decorate" :
+                decorate(wQueue.getWFront().getRecipe());
+                break;
+        }
+        if (step.size() < initialSize) {
+            UI.setFontSize(17);
+            UI.drawImage("popup_DHP.png", 240, 120, 367, 213);
+            step.clear();
+            orderComplete = true;
+            UI.drawString("Once the recipe is complete, we can", 285, 195);
+            UI.drawString("serve the customer in the waiting", 285, 215);
+            UI.drawString("queue by clicking the speech bubble.", 285, 235);
+            UI.drawString("Now it's your turn!", 285, 255);
+            UI.sleep(6000);
+            wQueue.waitingDequeue();
+            redrawAll();
+            active = true;
+        }
         while (active) {
             addOrder(oQueue);
         }
-
     }
 
     public void doMouse(String action, double x, double y) {
@@ -96,6 +157,8 @@ public class main
                         if (orderComplete) {
                             wQueue.waitingDequeue();
                             redrawAll();
+                        } else {
+                            UI.println("Recipe incomplete!");
                         }
                     }
 
@@ -103,7 +166,7 @@ public class main
 
                     /* refridgerate */
                     if (!wQueue.waitingQueueEmpty() && !orderComplete && releasedX >= 70 && releasedX <= 220 && releasedY >= 20 && releasedY <= 240) {
-                        actual = "refridgerate";
+                        actual = "Refridgerate";
                         if (step.size() > 0 && actual == step.get(0)) {
                             refridgerate(currentRecipe);
                         } else {
@@ -113,7 +176,7 @@ public class main
                     }
                     /* chop */
                     if (!wQueue.waitingQueueEmpty() && !orderComplete && releasedX >= 268 && releasedX <= 318 && releasedY >= 50 && releasedY <= 190) {
-                        actual = "chop";
+                        actual = "Chop";
                         if (step.size() > 0 && actual == step.get(0)) {
                             chop(currentRecipe);
                         } else {
@@ -123,7 +186,7 @@ public class main
                     }
                     /* mix */
                     if (!wQueue.waitingQueueEmpty() && !orderComplete && releasedX >= 392 && releasedX <= 482 && releasedY >= 68 && releasedY <= 143) {
-                        actual = "mix";
+                        actual = "Mix";
                         if (step.size() > 0 && actual == step.get(0)) {
                             mix(currentRecipe);
                         } else {
@@ -133,7 +196,7 @@ public class main
                     }
                     /* oven */
                     if (!wQueue.waitingQueueEmpty() && !orderComplete && releasedX >= 516 && releasedX <=684 && releasedY >= 85 && releasedY <= 250) {
-                        actual = "oven";
+                        actual = "Bake";
                         if (step.size() > 0 && actual == step.get(0)) {
                             oven(currentRecipe);
                         } else {
@@ -143,7 +206,7 @@ public class main
                     }
                     /* decorate */
                     if (!wQueue.waitingQueueEmpty() && !orderComplete && releasedX >= 700 && releasedX <= 770 && releasedY >= 94 && releasedY <= 159) {
-                        actual = "decorate";
+                        actual = "Decorate";
                         if (step.size() > 0 && actual == step.get(0)) {
                             decorate(currentRecipe);
                         } else {
@@ -239,9 +302,8 @@ public class main
     }
 
     public void addOrder(OrderQueue oQueue) {
-        while (oQueue.getSize() < 3) {
+        if (oQueue.getSize() < 3) {
             oQueue.orderEnqueue(newRandomCustomer());
-            //UI.sleep(30000); // adds customer every 30 seconds
             UI.sleep(5000);
         }
     }
@@ -305,41 +367,41 @@ public class main
     public void recipeStart(String recipe, WaitingQueue wQueue) {
         switch (recipe) {
             case "Parfait" :
-                step.add("refridgerate");
-                step.add("chop");
-                step.add("decorate");
+                step.add("Refridgerate");
+                step.add("Chop");
+                step.add("Decorate");
                 break;
             case "Fruit Tart" :
-                step.add("mix");
-                step.add("oven");
-                step.add("chop");
-                step.add("decorate");
-                step.add("refridgerate");
+                step.add("Mix");
+                step.add("Bake");
+                step.add("Chop");
+                step.add("Decorate");
+                step.add("Refridgerate");
                 break;
             case "Cinnamon Roll":
-                step.add("mix");
-                step.add("chop");
-                step.add("oven");
+                step.add("Mix");
+                step.add("Chop");
+                step.add("Bake");
                 break;
             case "Cake":
-                step.add("mix");
-                step.add("oven");
-                step.add("decorate");
+                step.add("Mix");
+                step.add("Bake");
+                step.add("Decorate");
                 break;
             case "Ube Cupcake":
-                step.add("mix");
-                step.add("oven");
-                step.add("decorate");
+                step.add("Mix");
+                step.add("Bake");
+                step.add("Decorate");
                 break;
             case "Coffee Jelly":
-                step.add("mix");
-                step.add("refridgerate");
-                step.add("decorate");
+                step.add("Mix");
+                step.add("Refridgerate");
+                step.add("Decorate");
                 break;
             case "Melon Float":
-                step.add("mix");
-                step.add("refridgerate");
-                step.add("decorate");
+                step.add("Mix");
+                step.add("Refridgerate");
+                step.add("Decorate");
                 break;
         }
         UI.println("First step: " + step.get(0));
@@ -361,9 +423,15 @@ public class main
     public void refridgerate (String recipe) {
         /*placeholder*/
         actionActive = true;
+
+        UI.drawImage("kitchenGUI/kitchenactionBG_DHP.png", 0, 0, 1098, 672);
+        UI.drawImage("kitchenGUI/fridge_open_DHP.png", 250, 80, 150, 350);
+        UI.sleep(2000);
+
         UI.println("Refridgerating...");
         UI.sleep(5000);
         UI.println("Done!");
+
         step.remove(0);
         checkRecipeCompletion();
         actionActive = false;
@@ -374,16 +442,16 @@ public class main
         if (recipe.equals("Cinnamon Roll")) {
             for (int i = 0; i < 5; i++) {
                 UI.drawImage("kitchenGUI/kitchenactionBG_DHP.png", 0, 0, 1098, 672);
-                UI.drawImage("kitchenGUI/chopping1_DHP.png", 185, 200, 500, 221);
-                UI.drawImage("kitchenGUI/chopping_knife1_DHP.png", 500, 160, 120, 70);
+                UI.drawImage("kitchenGUI/chopping1_DHP.png", 144, 250, 600, 265);
+                UI.drawImage("kitchenGUI/chopping_knife1_DHP.png", 517, 233, 204, 130);
                 UI.sleep(700);
                 UI.drawImage("kitchenGUI/kitchenactionBG_DHP.png", 0, 0, 1098, 672);
-                UI.drawImage("kitchenGUI/chopping1_DHP.png", 185, 200, 500, 221);
-                UI.drawImage("kitchenGUI/chopping_knife2_DHP.png", 510, 100, 100, 100);
+                UI.drawImage("kitchenGUI/chopping1_DHP.png", 144, 250, 600, 265);
+                UI.drawImage("kitchenGUI/chopping_knife2_DHP.png", 525, 183, 180, 180);
                 UI.sleep(700);
             }
             UI.drawImage("kitchenGUI/kitchenactionBG_DHP.png", 0, 0, 1098, 672);
-            UI.drawImage("kitchenGUI/chopping2_DHP.png", 185, 200, 500, 221);
+            UI.drawImage("kitchenGUI/chopping2_DHP.png", 144, 250, 600, 265);
             UI.sleep(1500);
             redrawAll();
             step.remove(0);
@@ -391,31 +459,29 @@ public class main
         } else if (recipe.equals("Parfait") || recipe.equals("Fruit Tart")) {
             for (int i = 0; i < 5; i++) {
                 UI.drawImage("kitchenGUI/kitchenactionBG_DHP.png", 0, 0, 1098, 672);
-                UI.drawImage("kitchenGUI/chopping3_DHP.png", 185, 200, 500, 221);
-                UI.drawImage("kitchenGUI/chopping_knife1_DHP.png", 500, 160, 120, 70);
+                UI.drawImage("kitchenGUI/chopping3_DHP.png", 144, 250, 600, 265);
+                UI.drawImage("kitchenGUI/chopping_knife1_DHP.png", 517, 233, 204, 130);
                 UI.sleep(700);
                 UI.drawImage("kitchenGUI/kitchenactionBG_DHP.png", 0, 0, 1098, 672);
-                UI.drawImage("kitchenGUI/chopping3_DHP.png", 185, 200, 500, 221);
-                UI.drawImage("kitchenGUI/chopping_knife2_DHP.png", 510, 100, 100, 100);
+                UI.drawImage("kitchenGUI/chopping3_DHP.png", 144, 250, 600, 265);
+                UI.drawImage("kitchenGUI/chopping_knife2_DHP.png", 525, 183, 180, 180);
                 UI.sleep(700);
             }
             UI.drawImage("kitchenGUI/kitchenactionBG_DHP.png", 0, 0, 1098, 672);
-            UI.drawImage("kitchenGUI/chopping4_DHP.png", 185, 200, 500, 221);
+            UI.drawImage("kitchenGUI/chopping4_DHP.png", 144, 250, 600, 265);
             UI.sleep(1500);
             for (int i = 0; i < 5; i++) {
-                for (int j = 1; j <= 2; j++) {
-                    UI.drawImage("kitchenGUI/kitchenactionBG_DHP.png", 0, 0, 1098, 672);
-                UI.drawImage("kitchenGUI/chopping5_DHP.png", 185, 200, 500, 221);
-                UI.drawImage("kitchenGUI/chopping_knife1_DHP.png", 500, 160, 120, 70);
+                UI.drawImage("kitchenGUI/kitchenactionBG_DHP.png", 0, 0, 1098, 672);
+                UI.drawImage("kitchenGUI/chopping5_DHP.png", 144, 250, 600, 265);
+                UI.drawImage("kitchenGUI/chopping_knife1_DHP.png", 517, 233, 204, 130);
                 UI.sleep(700);
                 UI.drawImage("kitchenGUI/kitchenactionBG_DHP.png", 0, 0, 1098, 672);
-                UI.drawImage("kitchenGUI/chopping5_DHP.png", 185, 200, 500, 221);
-                UI.drawImage("kitchenGUI/chopping_knife2_DHP.png", 510, 100, 100, 100);
+                UI.drawImage("kitchenGUI/chopping5_DHP.png", 144, 250, 600, 265);
+                UI.drawImage("kitchenGUI/chopping_knife2_DHP.png", 525, 183, 180, 180);
                 UI.sleep(700);
-                }
             }
             UI.drawImage("kitchenGUI/kitchenactionBG_DHP.png", 0, 0, 1098, 672);
-            UI.drawImage("kitchenGUI/chopping6_DHP.png", 185, 200, 500, 221);
+            UI.drawImage("kitchenGUI/chopping6_DHP.png", 144, 250, 600, 265);
             UI.sleep(1500);
             redrawAll();
             step.remove(0);
@@ -500,13 +566,13 @@ public class main
                 frames = 2;
                 break;
         }
-        for (int i = 0; i < frames; i++) {
+        for (int i = 1; i < frames+1; i++) {
             UI.drawImage("kitchenGUI/kitchenactionBG_DHP.png", 0, 0, 1098, 672);
-            UI.drawImage("kitchenGUI/" + recipe + "_decor" + i + "_DHP.png", 150, 150, 350, 350);
+            UI.drawImage("kitchenGUI/" + recipe + "_decor" + i + "_DHP.png", 280, 160, 350, 350);
             UI.sleep(800);
         }
         UI.drawImage("kitchenGUI/kitchenactionBG_DHP.png", 0, 0, 1098, 672);
-        UI.drawImage("recipeGUI/" + recipe + "_DHP.png", 150, 150, 350, 350);
+        UI.drawImage("recipeGUI/" + recipe + "_DHP.png", 300, 160, 270, 320);
         UI.sleep(1000);
         step.remove(0);
         redrawAll();

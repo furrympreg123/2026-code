@@ -5,9 +5,8 @@
  * !! For the ecs100 library to work (and not cause compile error), BlueJ must be version 5.5.0
  * 
  * To-do
- * - Fix kitchen method positions
- * - Fridge Method
  * - Test game thoroughly for bugs (e.g. queue stopping...)
+ * - Edit read me to have instructions
  *
  * @author Kanya Farley
  * @version 5/8
@@ -90,10 +89,10 @@ public class main
         UI.setColor(Color.decode("#FFA8C7"));
         UI.setFontSize(20);
         UI.drawString("Once the order is taken, the above", 230, 365);
-        UI.drawString("kitchen tools can be used in accordance", 210, 390);
-        UI.drawString("with the next step on the side panel.", 200, 415);
-        UI.drawString("This customer wants a " + wQueue.getWFront().getRecipe(), 200, 440);
-        UI.drawString("So we click the " + step.get(0).toLowerCase() + " tool!", 200, 465);
+        UI.drawString("kitchen tools can be used in accordance with", 210, 390);
+        UI.drawString("the next step on the side panel.", 200, 415);
+        UI.drawString("The side panel says to " + step.get(0).toLowerCase() + ", so", 200, 440);
+        UI.drawString("we click the " + step.get(0).toLowerCase() + " tool!", 200, 465);
         UI.sleep(6000);
 
         int initialSize = step.size();
@@ -116,6 +115,7 @@ public class main
                 break;
         }
         if (step.size() < initialSize) {
+            UI.print(" (not actually)"); // avoid confusing the user about "next step" in tutorial
             UI.setFontSize(17);
             UI.drawImage("popup_DHP.png", 240, 120, 367, 213);
             step.clear();
@@ -404,6 +404,7 @@ public class main
                 step.add("Decorate");
                 break;
         }
+        UI.println();
         UI.println("First step: " + step.get(0));
     }
 
@@ -425,13 +426,18 @@ public class main
         actionActive = true;
 
         UI.drawImage("kitchenGUI/kitchenactionBG_DHP.png", 0, 0, 1098, 672);
-        UI.drawImage("kitchenGUI/fridge_open_DHP.png", 250, 80, 150, 350);
+        UI.drawImage("kitchenGUI/fridge_open_DHP.png", 180, 50, 470, 600);
         UI.sleep(2000);
-
-        UI.println("Refridgerating...");
-        UI.sleep(5000);
-        UI.println("Done!");
-
+        if (recipe.equals("Fruit Tart")) {
+            UI.drawImage("kitchenGUI/Fruit Tart_DHP.png", 230, 250, 80, 80);
+        } else {
+            UI.drawImage("kitchenGUI/" + recipe + "_decor1_DHP.png", 310, 280, 140, 140);
+        }
+        UI.sleep(2000);
+        UI.drawImage("kitchenGUI/kitchenactionBG_DHP.png", 0, 0, 1098, 672);
+        UI.drawImage("kitchenGUI/fridge_closed_DHP.png", 185, 55, 470, 560);
+        UI.sleep(2000);
+        redrawAll();
         step.remove(0);
         checkRecipeCompletion();
         actionActive = false;
@@ -496,7 +502,7 @@ public class main
             for (int i = 0; i < 3; i++) {
                 for (int j = 1; j < 6; j++) {
                     UI.drawImage("kitchenGUI/kitchenactionBG_DHP.png", 0, 0, 1098, 672);
-                    UI.drawImage("kitchenGUI/melon_mix" + j + "_DHP.png", 185, 200, 500, 221);
+                    UI.drawImage("kitchenGUI/melon_mix" + j + "_DHP.png", 175, 220, 530, 251);
                     UI.sleep(800);
                 }
             }
@@ -508,7 +514,7 @@ public class main
             for (int i = 0; i < 3; i++) {
                 for (int j = 1; j < 6; j++) {
                     UI.drawImage("kitchenGUI/kitchenactionBG_DHP.png", 0, 0, 1098, 672);
-                    UI.drawImage("kitchenGUI/mix" + j + "_DHP.png", 185, 200, 500, 221);
+                    UI.drawImage("kitchenGUI/mix" + j + "_DHP.png", 175, 220, 530, 251);
                     UI.sleep(600);
                 }
             }
@@ -523,18 +529,18 @@ public class main
     public void oven (String recipe) {
         actionActive = true;
         UI.drawImage("kitchenGUI/kitchenactionBG_DHP.png", 0, 0, 1098, 672);
-        UI.drawImage("kitchenGUI/oven_empty_DHP.png", 200, 200, 450, 221);
+        UI.drawImage("kitchenGUI/oven_empty_DHP.png", 170, 180, 505, 330);
         UI.sleep(2000);
         UI.drawImage("kitchenGUI/kitchenactionBG_DHP.png", 0, 0, 1098, 672);
-        UI.drawImage("kitchenGUI/oven_prebaked_DHP.png", 200, 200, 450, 221);
+        UI.drawImage("kitchenGUI/oven_prebaked_DHP.png", 170, 180, 505, 330);
         UI.sleep(2000);
         for (int i = 1; i <= 3; i++) {
             UI.drawImage("kitchenGUI/kitchenactionBG_DHP.png", 0, 0, 1098, 672);
-            UI.drawImage("kitchenGUI/oven_bake" + i + "_DHP.png", 200, 200, 450, 221);
+            UI.drawImage("kitchenGUI/oven_bake" + i + "_DHP.png", 170, 180, 505, 330);
             UI.sleep(1500);
         }
         UI.drawImage("kitchenGUI/kitchenactionBG_DHP.png", 0, 0, 1098, 672);
-        UI.drawImage("kitchenGUI/oven_baked_DHP.png", 200, 200, 450, 221);
+        UI.drawImage("kitchenGUI/oven_baked_DHP.png", 170, 180, 505, 330);
         UI.sleep(3000);
         redrawAll();
         step.remove(0);
@@ -568,11 +574,11 @@ public class main
         }
         for (int i = 1; i < frames+1; i++) {
             UI.drawImage("kitchenGUI/kitchenactionBG_DHP.png", 0, 0, 1098, 672);
-            UI.drawImage("kitchenGUI/" + recipe + "_decor" + i + "_DHP.png", 280, 160, 350, 350);
+            UI.drawImage("kitchenGUI/" + recipe + "_decor" + i + "_DHP.png", 260, 170, 350, 350);
             UI.sleep(800);
         }
         UI.drawImage("kitchenGUI/kitchenactionBG_DHP.png", 0, 0, 1098, 672);
-        UI.drawImage("recipeGUI/" + recipe + "_DHP.png", 300, 160, 270, 320);
+        UI.drawImage("recipeGUI/" + recipe + "_DHP.png", 313, 163, 250, 320);
         UI.sleep(1000);
         step.remove(0);
         redrawAll();

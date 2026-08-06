@@ -5,10 +5,10 @@
  * !! For the ecs100 library to work (and not cause compile error), BlueJ must be version 5.5.0
  * 
  * To-do
- * - Test game thoroughly for bugs (e.g. queue stopping...)
+ * - fix order queue being added to...
  *
  * @author Kanya Farley
- * @version 5/8
+ * @version 7/8
  */
 import java.util.Random;
 import ecs100.*;
@@ -64,6 +64,8 @@ public class main
         UI.drawImage("kitchen_DHP.jpeg", 0, 0);
 
         active = false;
+        UI.println("(Tutorial not interactable.)");
+        
         UI.drawImage("popup_DHP.png", 140, 270, 550, 320);
         UI.setColor(Color.decode("#FFA8C7"));
         UI.setFontSize(20);
@@ -142,75 +144,77 @@ public class main
             case "released" -> {
                     this.releasedX = x;
                     this.releasedY = y;
-                    if (this.active && releasedX >=oQueueX+140 && releasedX <= oQueueX+240 && releasedY >= oQueueY-50 && releasedY <= oQueueY+50 && !oQueue.orderQueueEmpty() && wQueue.waitingQueueEmpty()) {
-                        wQueue.waitingEnqueue(orderTaken(oQueue));
-                        if (!wQueue.waitingQueueEmpty()) {
-                            redrawAll();
+                    if (this.active) {
+                        if (releasedX >=oQueueX+140 && releasedX <= oQueueX+240 && releasedY >= oQueueY-50 && releasedY <= oQueueY+50 && !oQueue.orderQueueEmpty() && wQueue.waitingQueueEmpty()) {
+                            wQueue.waitingEnqueue(orderTaken(oQueue));
+                            if (!wQueue.waitingQueueEmpty()) {
+                                redrawAll();
+                            }
+                        } else if (releasedX >=oQueueX+140 && releasedX <= oQueueX+240 && releasedY >= oQueueY && releasedY <= oQueueY+100 && !orderComplete) {
+                            UI.println("Sorry, you can't take an order right now.");
                         }
-                    } else if (releasedX >=oQueueX+140 && releasedX <= oQueueX+240 && releasedY >= oQueueY && releasedY <= oQueueY+100 && !orderComplete) {
-                        UI.println("Sorry, you can't take an order right now.");
-                    }
 
-                    /* serve waiting customer */
-                    if (this.active && releasedX >= wQueueX-10 && releasedX <= wQueueX+90 && releasedY >= wQueueY-50 && releasedY <= wQueueY+50 && orderComplete) {
-                        if (orderComplete) {
-                            wQueue.waitingDequeue();
-                            redrawAll();
-                        } else {
-                            UI.println("Recipe incomplete!");
+                        /* serve waiting customer */
+                        if (releasedX >= wQueueX-10 && releasedX <= wQueueX+90 && releasedY >= wQueueY-50 && releasedY <= wQueueY+50 && orderComplete) {
+                            if (orderComplete) {
+                                wQueue.waitingDequeue();
+                                redrawAll();
+                            } else {
+                                UI.println("Recipe incomplete!");
+                            }
                         }
-                    }
 
-                    // step actions per recipe
+                        // step actions per recipe
 
-                    /* refridgerate */
-                    if (!wQueue.waitingQueueEmpty() && !orderComplete && releasedX >= 70 && releasedX <= 220 && releasedY >= 20 && releasedY <= 240) {
-                        actual = "Refridgerate";
-                        if (step.size() > 0 && actual == step.get(0)) {
-                            refridgerate(currentRecipe);
-                        } else {
-                            UI.println("Wrong step!");
-                            UI.println("Required step: " + step.get(0));
+                        /* refridgerate */
+                        if (!wQueue.waitingQueueEmpty() && !orderComplete && releasedX >= 70 && releasedX <= 220 && releasedY >= 20 && releasedY <= 240) {
+                            actual = "Refridgerate";
+                            if (step.size() > 0 && actual == step.get(0)) {
+                                refridgerate(currentRecipe);
+                            } else {
+                                UI.println("Wrong step!");
+                                UI.println("Required step: " + step.get(0));
+                            }
                         }
-                    }
-                    /* chop */
-                    if (!wQueue.waitingQueueEmpty() && !orderComplete && releasedX >= 268 && releasedX <= 318 && releasedY >= 50 && releasedY <= 190) {
-                        actual = "Chop";
-                        if (step.size() > 0 && actual == step.get(0)) {
-                            chop(currentRecipe);
-                        } else {
-                            UI.println("Wrong step!");
-                            UI.println("Required step: " + step.get(0));
+                        /* chop */
+                        if (!wQueue.waitingQueueEmpty() && !orderComplete && releasedX >= 268 && releasedX <= 318 && releasedY >= 50 && releasedY <= 190) {
+                            actual = "Chop";
+                            if (step.size() > 0 && actual == step.get(0)) {
+                                chop(currentRecipe);
+                            } else {
+                                UI.println("Wrong step!");
+                                UI.println("Required step: " + step.get(0));
+                            }
                         }
-                    }
-                    /* mix */
-                    if (!wQueue.waitingQueueEmpty() && !orderComplete && releasedX >= 392 && releasedX <= 482 && releasedY >= 68 && releasedY <= 143) {
-                        actual = "Mix";
-                        if (step.size() > 0 && actual == step.get(0)) {
-                            mix(currentRecipe);
-                        } else {
-                            UI.println("Wrong step!");
-                            UI.println("Required step: " + step.get(0));
+                        /* mix */
+                        if (!wQueue.waitingQueueEmpty() && !orderComplete && releasedX >= 392 && releasedX <= 482 && releasedY >= 68 && releasedY <= 143) {
+                            actual = "Mix";
+                            if (step.size() > 0 && actual == step.get(0)) {
+                                mix(currentRecipe);
+                            } else {
+                                UI.println("Wrong step!");
+                                UI.println("Required step: " + step.get(0));
+                            }
                         }
-                    }
-                    /* oven */
-                    if (!wQueue.waitingQueueEmpty() && !orderComplete && releasedX >= 516 && releasedX <=684 && releasedY >= 85 && releasedY <= 250) {
-                        actual = "Bake";
-                        if (step.size() > 0 && actual == step.get(0)) {
-                            oven(currentRecipe);
-                        } else {
-                            UI.println("Wrong step!");
-                            UI.println("Required step: " + step.get(0));
+                        /* oven */
+                        if (!wQueue.waitingQueueEmpty() && !orderComplete && releasedX >= 516 && releasedX <=684 && releasedY >= 85 && releasedY <= 250) {
+                            actual = "Bake";
+                            if (step.size() > 0 && actual == step.get(0)) {
+                                oven(currentRecipe);
+                            } else {
+                                UI.println("Wrong step!");
+                                UI.println("Required step: " + step.get(0));
+                            }
                         }
-                    }
-                    /* decorate */
-                    if (!wQueue.waitingQueueEmpty() && !orderComplete && releasedX >= 700 && releasedX <= 770 && releasedY >= 94 && releasedY <= 159) {
-                        actual = "Decorate";
-                        if (step.size() > 0 && actual == step.get(0)) {
-                            decorate(currentRecipe);
-                        } else {
-                            UI.println("Wrong step!");
-                            UI.println("Required step: " + step.get(0));
+                        /* decorate */
+                        if (!wQueue.waitingQueueEmpty() && !orderComplete && releasedX >= 700 && releasedX <= 770 && releasedY >= 94 && releasedY <= 159) {
+                            actual = "Decorate";
+                            if (step.size() > 0 && actual == step.get(0)) {
+                                decorate(currentRecipe);
+                            } else {
+                                UI.println("Wrong step!");
+                                UI.println("Required step: " + step.get(0));
+                            }
                         }
                     }
 
@@ -428,7 +432,7 @@ public class main
         UI.drawImage("kitchenGUI/fridge_open_DHP.png", 180, 50, 470, 600);
         UI.sleep(2000);
         if (recipe.equals("Fruit Tart")) {
-            UI.drawImage("kitchenGUI/Fruit Tart_DHP.png", 230, 250, 80, 80);
+            UI.drawImage("recipeGUI/Fruit Tart_DHP.png", 230, 250, 80, 80);
         } else {
             UI.drawImage("kitchenGUI/" + recipe + "_decor1_DHP.png", 310, 280, 140, 140);
         }

@@ -6,7 +6,6 @@
  * 
  * To-do
  * - Test game thoroughly for bugs (e.g. queue stopping...)
- * - Edit read me to have instructions
  *
  * @author Kanya Farley
  * @version 5/8
